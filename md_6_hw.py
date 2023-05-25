@@ -51,3 +51,29 @@
 розпакований вміст архіву переноситься до папки archives у підпапку, названу так само, як і архів, але без розширення в кінці;
 файли, розширення яких невідомі, залишаються без зміни.
 """
+import sys
+
+def sort_folder(path):
+    with open (path, 'r') as text:
+        print(text.readlines())
+        images = None # 'JPEG', 'PNG', 'JPG', 'SVG' 
+        video = None #'AVI', 'MP4', 'MOV', 'MKV'
+        documents = None # 'DOC', 'DOCX', 'TXT', 'PDF', 'XLSX', 'PPTX'
+        music = None # 'MP3', 'OGG', 'WAV', 'AMR'
+        archives = None # 'ZIP', 'GZ', 'TAR'
+        Unknown = None
+
+
+    return
+
+path_input = sys.argv # function gets arguments enered during script start
+#print (path_input)
+path = path_input[1]
+#print(path1)
+sort_folder(path)
+
+#if __name__ == __main__:
+#path = 'D:\\VSCode_projects\\Unsorted_hw6\\test_6hw.txt'
+#sort_folder(path)
+
+#input i the terminal = 'python md_6_hw.py D:\VSCode_projects\Unsorted_hw6\test_6hw.txt'
