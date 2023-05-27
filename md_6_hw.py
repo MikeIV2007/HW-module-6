@@ -43,6 +43,7 @@
 аудіо файли переносимо до audio
 відео файли до video
 архіви розпаковуються та їх вміст переноситься до папки archives
+
 Критерії приймання завдання
 всі файли та папки перейменовуються за допомогою функції normalize.
 розширення файлів не змінюється після перейменування.
@@ -51,29 +52,132 @@
 розпакований вміст архіву переноситься до папки archives у підпапку, названу так само, як і архів, але без розширення в кінці;
 файли, розширення яких невідомі, залишаються без зміни.
 """
+import os
 import sys
 
-def sort_folder(path):
-    with open (path, 'r') as text:
-        print(text.readlines())
-        images = None # 'JPEG', 'PNG', 'JPG', 'SVG' 
-        video = None #'AVI', 'MP4', 'MOV', 'MKV'
-        documents = None # 'DOC', 'DOCX', 'TXT', 'PDF', 'XLSX', 'PPTX'
-        music = None # 'MP3', 'OGG', 'WAV', 'AMR'
-        archives = None # 'ZIP', 'GZ', 'TAR'
-        Unknown = None
+"""first vertion"""
+# import sys
+# def sort_folder(path):
+#     with open (path, 'r') as text:
+#         print(text.readlines())
+#         images = None # 'JPEG', 'PNG', 'JPG', 'SVG'
+#         video = None #'AVI', 'MP4', 'MOV', 'MKV'
+#         documents = None # 'DOC', 'DOCX', 'TXT', 'PDF', 'XLSX', 'PPTX'
+#         music = None # 'MP3', 'OGG', 'WAV', 'AMR'
+#         archives = None # 'ZIP', 'GZ', 'TAR'
+#         Unknown = None
+# return
+
+"""Second version"""
+images = []
+images_tmp = ['.jpeg', '.png', '.jpg', '.svg']
+
+video = [] 
+video_tmp = ['.avi', '.mp4', '.mov', '.mkv', '.wmv']
+    # documents = [] # 'DOC', 'DOCX', 'TXT', 'PDF', 'XLSX', 'PPTX'
+    # music = [] # 'MP3', 'OGG', 'WAV', 'AMR'
+    # archives = [] # 'ZIP', 'GZ', 'TAR'
+    # Unknown = [] # other
+
+"""normalize"""
+
+CYRILLIC_SYMBOLS = "абвгдеёжзийклмнопрстуфхцчшщъыьэюяєіїґ"
+TRANSLATION = ("a", "b", "v", "g", "d", "e", "e", "j", "z", "i", "j", "k", "l", "m", "n", "o", "p", "r", "s", "t", "u",
+               "f", "h", "ts", "ch", "sh", "sch", "", "y", "", "e", "yu", "ya", "je", "i", "ji", "g")
+
+TRANS = {}
+
+for c, l in zip(CYRILLIC_SYMBOLS, TRANSLATION):
+    TRANS[ord(c)] = l
+    TRANS[ord(c.upper())] = l.upper()
+
+# def simbol_to_replace(text):
+#     for chr in text:
+    
+#         if ord(chr) in range(48,58):# (0-9)
+#             continue
+#         elif ord(chr) in range(65,91):#(A-Z)
+#             continue
+#         elif ord(chr) in range(97,123):#(a-z)
+#             continue
+#         else:
+#             text = text.replace(chr, "_")
+#     return text
+    
+def normalize(text):
+    text = text.translate(TRANS)
+    for chr in text:
+        if ord(chr) in range(48,58):# (0-9)
+            continue
+        elif ord(chr) in range(65,91):#(A-Z)
+            continue
+        elif ord(chr) in range(97,123):#(a-z)
+            continue
+        else:
+            text = text.replace(chr, "_")
+    return text
+
+def sort_folder(path, level = 1):
+
+    #print ('level =', level, 'Content: ',os.listdir(path))
+    for i in os.listdir(path):
+        
+        if os.path.isdir(path + '\\' + i):
+            #print ('Going one level down', path + '\\' + i )
+            sort_folder(path + '\\' + i, level + 1 )
+            #print ("returning to ", path)
+
+        else:
+            file_name = os.path.basename(path + '\\' + i)
+            file_extension = list (os.path.splitext(file_name))
+            #print (file_name, file_extension, type(file_extension), file_extension[1], type(file_extension[1]))
+            for ext in images_tmp:
+                #print (f'{file_name} *** {file_extension[1]}')
+               
+                if file_extension[1] == ext:
+                    file_extension[0] = normalize(file_extension[0])
+                    #print (file_name, file_extension, type(file_extension), file_extension[1], type(file_extension[1]))
+                    file_name = file_extension[0] + file_extension[1]
+                    images.append(file_name)
+           
+            for ext in video_tmp:
+                #print (f'{file_name} *** {file_extension[1]}')
+               
+                #print (images)
+                if file_extension[1] == ext:
+                    file_name
+                    video.append(file_name)            
+                
+                    
+                
+                    #images_in_level.append (file_name)
+            # images.extend(images_in_level)
+    
+    return images, video 
 
 
-    return
 
-path_input = sys.argv # function gets arguments enered during script start
-#print (path_input)
-path = path_input[1]
-#print(path1)
+    
+"""main method to start script"""
+# path_input = sys.argv  # function gets arguments enered during script start
+# #print (path_input)
+# path = path_input[1]
+# # print(path1)
+# sort_folder(path)
+
+"""test 1"""
+
+path = 'D:\\VSCode_projects\\Unsorted_hw6_normalize_test'
 sort_folder(path)
+print ('\nImages = ',images, '\n','\nVideo = ',video)
 
-#if __name__ == __main__:
-#path = 'D:\\VSCode_projects\\Unsorted_hw6\\test_6hw.txt'
-#sort_folder(path)
+"""test 2"""
 
-#input i the terminal = 'python md_6_hw.py D:\VSCode_projects\Unsorted_hw6\test_6hw.txt'
+# def main():
+#     path = 'D:\\VSCode_projects\\Unsorted_hw6'
+#     return sort_folder(path)
+
+# if __name__ == 'main':
+#     main()
+
+
