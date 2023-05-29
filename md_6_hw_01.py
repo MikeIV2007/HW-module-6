@@ -68,7 +68,7 @@ documents = []
 documents_tmp =['.doc', '.docx', '.txt', '.pdf', '.xlsx', '.pptx']
 
 music = [] 
-music_tmp =  ['.mp3', '..ogg', '.wav', '.amr']
+music_tmp =  ['.mp3', '.ogg', '.wav', '.amr']
 
 archives = []
 archives_tmp =  ['.zip', '.gz', '.tar']
@@ -140,16 +140,13 @@ def sort_folder(path):
                     file_extension[0] = normalize(file_extension[0])
                     file_name = file_extension[0] + file_extension[1]
                     archives.append(file_name)
-                else:
-                    file_extension[0] = normalize(file_extension[0])
-                    file_name = file_extension[0] + file_extension[1]
+                    
+            if file_extension[1] not in images_tmp and file_extension[1] not in video_tmp and file_extension[1] not in documents_tmp and file_extension[1] not in music_tmp and file_extension[1] not in archives_tmp :
                     unknown.append(file_name)
+                
 
     return images, video, documents, music, unknown 
 
-
-
-    
 """main method to start script"""
 # path_input = sys.argv  # function gets arguments enered during script start
 # #print (path_input)
@@ -159,7 +156,7 @@ def sort_folder(path):
 
 """test 1"""
 
-path = 'D:\\VSCode_projects\\Unsorted_hw6_normalize_test'
+path = 'D:\\VSCode_projects\\Unsorted_hw6_main'
 sort_folder(path)
 print ('\nImages = ',images, '\n',
        '\nVideo = ',video, '\n'
@@ -171,8 +168,14 @@ print ('\nImages = ',images, '\n',
 """test 2"""
 
 # def main():
-#     path = 'D:\\VSCode_projects\\Unsorted_hw6'
-#     return sort_folder(path)
+#     path = 'D:\\VSCode_projects\\Unsorted_hw6_main'
+#     sort_folder(path)
+#     print ('\nImages = ',images, '\n',
+#         '\nVideo = ',video, '\n'
+#         '\nDocuments = ',documents, '\n'
+#         '\nMusic = ',music, '\n'
+#         '\nArchives = ',archives, '\n'
+#         '\nUnknown = ',unknown, '\n')
 
 # if __name__ == 'main':
 #     main()

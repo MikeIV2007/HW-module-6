@@ -52,8 +52,13 @@
 розпакований вміст архіву переноситься до папки archives у підпапку, названу так само, як і архів, але без розширення в кінці;
 файли, розширення яких невідомі, залишаються без зміни.
 """
+#all foders are renamed and all empty folders are delited
+#all files are renamed in the derectory
+# images are sorted and moved to the folder "images"
+
 import os
 import sys
+import shutil
 
 """first vertion"""
 
@@ -68,7 +73,7 @@ documents = []
 documents_tmp =['.doc', '.docx', '.txt', '.pdf', '.xlsx', '.pptx']
 
 music = [] 
-music_tmp =  ['.mp3', '..ogg', '.wav', '.amr']
+music_tmp =  ['.mp3', '.ogg', '.wav', '.amr']
 
 archives = []
 archives_tmp =  ['.zip', '.gz', '.tar']
@@ -102,77 +107,94 @@ def normalize(text):
 def sort_folder(path):
     
     for i in os.listdir(path):
-        
-        if os.path.isdir(path + '\\' + i):
-            sort_folder(path + '\\' + i)
+         
+        if os.path.isdir(path + '\\' + i) == True:
+            if len(os.listdir(path + '\\' + i)) == 0 and os.path.basename(path + '\\' + i) != 'images' and os.path.basename(path + '\\' + i) != 'video'and os.path.basename(path + '\\' + i) != 'documents' and os.path.basename(path + '\\' + i) != 'music' and os.path.basename(path + '\\' + i) != 'archives':
+               os.rmdir(path + '\\' + i) # deletes all empty folders
+            else:
+                folder_name = normalize(i)
+                os.rename(path + '\\' + i, path + '\\' + folder_name)
+                sort_folder(path + '\\' + folder_name) # recurtion to the inner foldeer
 
-        else:
-            file_name = os.path.basename(path + '\\' + i)
+
+        if os.path.isfile(path + '\\' + i) == True:
+            file_name = i
             file_extension = list (os.path.splitext(file_name))
+            file_extension[0] = normalize(file_extension[0])
+            file_name = file_extension[0] + file_extension[1] # normalizing files ( extentions remains not touched)
+            os.rename(path + '\\' + i, path + '\\' + file_name)
+            #print(file_name) # renaming file in derectory
+        
 
             for ext in images_tmp:
+                #print(file_extension, file_name)
                 if file_extension[1] == ext:
-                    file_extension[0] = normalize(file_extension[0])
-                    file_name = file_extension[0] + file_extension[1]
-                    images.append(file_name)
+                    #shutil.move(source_file, destination_path)
+                    shutil.move(path + '\\' + file_name, path_images + '\\' + file_name)
+                    print ('source = ',path + '\\' + file_name, 'destination =',path_images+ '\\' + file_name)
+                    #images.append(file_name)
 
            
-            for ext in video_tmp:
-                if file_extension[1] == ext:
-                    file_extension[0] = normalize(file_extension[0])
-                    file_name = file_extension[0] + file_extension[1]
-                    video.append(file_name)            
+            # for ext in video_tmp:
+            #     if file_extension[1] == ext:
+            #         file_extension[0] = normalize(file_extension[0])
+            #         file_name = file_extension[0] + file_extension[1]
+            #         video.append(file_name)            
                                 
-            for ext in documents_tmp:
-                if file_extension[1] == ext:
-                    file_extension[0] = normalize(file_extension[0])
-                    file_name = file_extension[0] + file_extension[1]
-                    documents.append(file_name)
+            # for ext in documents_tmp:
+            #     if file_extension[1] == ext:
+            #         file_extension[0] = normalize(file_extension[0])
+            #         file_name = file_extension[0] + file_extension[1]
+            #         documents.append(file_name)
 
-            for ext in music_tmp:
-                if file_extension[1] == ext:
-                    file_extension[0] = normalize(file_extension[0])
-                    file_name = file_extension[0] + file_extension[1]
-                    music.append(file_name)
+            # for ext in music_tmp:
+            #     if file_extension[1] == ext:
+            #         file_extension[0] = normalize(file_extension[0])
+            #         file_name = file_extension[0] + file_extension[1]
+            #         music.append(file_name)
 
-            for ext in archives_tmp:
-                if file_extension[1] == ext:
-                    file_extension[0] = normalize(file_extension[0])
-                    file_name = file_extension[0] + file_extension[1]
-                    archives.append(file_name)
-                else:
-                    file_extension[0] = normalize(file_extension[0])
-                    file_name = file_extension[0] + file_extension[1]
-                    unknown.append(file_name)
+            # for ext in archives_tmp:
+            #     if file_extension[1] == ext:
+            #         file_extension[0] = normalize(file_extension[0])
+            #         file_name = file_extension[0] + file_extension[1]
+            #         archives.append(file_name)
+                    
+            # if file_extension[1] not in images_tmp and file_extension[1] not in video_tmp and file_extension[1] not in documents_tmp and file_extension[1] not in music_tmp and file_extension[1] not in archives_tmp :
+            #         unknown.append(file_name)
+                
 
-    return images, video, documents, music, unknown 
+    return #images, video, documents, music, unknown 
 
-
-
-    
 """main method to start script"""
-# path_input = sys.argv  # function gets arguments enered during script start
-# #print (path_input)
-# path = path_input[1]
-# # print(path1)
-# sort_folder(path)
+path_input = sys.argv  # function gets arguments enered during script start
+#print (path_input)
+path = path_input[1]
+path_images = path + '\\' + 'images'
+sort_folder(path)
+#     path = 'python md_6_hw_05.py D:\\VSCode_projects\\Unsorted_hw6_main'
 
 """test 1"""
 
-path = 'D:\\VSCode_projects\\Unsorted_hw6_normalize_test'
-sort_folder(path)
-print ('\nImages = ',images, '\n',
-       '\nVideo = ',video, '\n'
-       '\nDocuments = ',documents, '\n'
-       '\nMusic = ',music, '\n'
-       '\nArchives = ',archives, '\n'
-       '\nUnknown = ',unknown, '\n')
+# path = 'D:\\VSCode_projects\\Unsorted_hw6_main'
+# sort_folder(path)
+# print ('\nImages = ',images, '\n',
+#        '\nVideo = ',video, '\n'
+#        '\nDocuments = ',documents, '\n'
+#        '\nMusic = ',music, '\n'
+#        '\nArchives = ',archives, '\n'
+#        '\nUnknown = ',unknown, '\n')
 
-"""test 2"""
+# """test 2"""
 
 # def main():
-#     path = 'D:\\VSCode_projects\\Unsorted_hw6'
-#     return sort_folder(path)
+#     path = 'D:\\VSCode_projects\\Unsorted_hw6_main'
+#     sort_folder(path)
+#     print ('\nImages = ',images, '\n',
+#         '\nVideo = ',video, '\n'
+#         '\nDocuments = ',documents, '\n'
+#         '\nMusic = ',music, '\n'
+#         '\nArchives = ',archives, '\n'
+#         '\nUnknown = ',unknown, '\n')
 
 # if __name__ == 'main':
 #     main()
