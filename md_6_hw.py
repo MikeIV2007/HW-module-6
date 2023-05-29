@@ -1,63 +1,9 @@
-"""Завдання
-У багатьох на робочому столі є папка, яка називається якось на кшталт "Розібрати". Як правило, розібрати цю папку руки ніколи так і не доходять.
-
-Ми з вами напишемо скрипт, який розбере цю папку. Зрештою ви зможете налаштувати цю програму під себе і вона виконуватиме індивідуальний сценарій, що відповідає вашим потребам. Для цього наш застосунок буде перевіряти розширення файлу (останні символи в імені файлу, як правило, після крапки) і, залежно від розширення, приймати рішення, до якої категорії віднести цей файл.
-
-Скрипт приймає один аргумент під час запуску — це ім'я папки, в якій він буде здійснювати сортування. Припустимо, що файл з програмою називається sort.py, тоді, щоб відсортувати папку /user/Desktop/Мотлох, потрібно запустити скрипт командою python sort.py /user/Desktop/Мотлох
-
-Для того щоб успішно впоратися з цим завданням, ви повинні винести логіку обробки папки в окрему функцію.
-Щоб скрипт міг пройти на будь-яку глибину вкладеності, функція обробки папок повинна рекурсивно викликати сама себе, коли їй зустрічаються вкладенні папки.
-Скрипт повинен проходити по вказаній під час виклику папці та сортирувати всі файли за групами:
-
-зображення ('JPEG', 'PNG', 'JPG', 'SVG');
-відео файли ('AVI', 'MP4', 'MOV', 'MKV');
-документи ('DOC', 'DOCX', 'TXT', 'PDF', 'XLSX', 'PPTX');
-музика ('MP3', 'OGG', 'WAV', 'AMR');
-архіви ('ZIP', 'GZ', 'TAR');
-невідомі розширення.
-Ви можете розширити та доповнити цей список, якщо хочете.
-
-В результатах роботи повинні бути:
-
-Список файлів в кожній категорії (музика, відео, фото та ін.)
-Перелік усіх відомих скрипту розширень, які зустрічаються в цільовій папці.
-Перелік всіх розширень, які скрипту невідомі.
-Потім необхідно додати функції, які будуть відповідати за обробку кожного типу файлів.
-
-Крім того, всі файли та папки потрібно перейменувати, видаливши із назви всі символи, що призводять до проблем. Для цього потрібно застосувати до імен файлів функцію normalize. Варто розуміти, що перейменувати файли потрібно так, щоб не змінити розширення файлів.
-
-Функція normalize:
-
-Здійснює транслітерацію кириличного алфавіту на латинський.
-Замінює всі символи крім латинських літер, цифр на '_'.
-Вимоги до функції normalize:
-
-приймає на вхід рядок та повертає рядок;
-здійснює транслітерацію кириличних символів на латиницю;
-замінює всі символи, крім літер латинського алфавіту та цифр, на символ '_';
-транслітерація може не відповідати стандарту, але бути читабельною;
-великі літери залишаються великими, а маленькі — маленькими після транслітерації.
-Умови для обробки:
-зображення переносимо до папки images
-документи переносимо до папки documents
-аудіо файли переносимо до audio
-відео файли до video
-архіви розпаковуються та їх вміст переноситься до папки archives
-
-Критерії приймання завдання
-всі файли та папки перейменовуються за допомогою функції normalize.
-розширення файлів не змінюється після перейменування.
-порожні папки видаляються
-скрипт ігнорує папки archives, video, audio, documents, images;
-розпакований вміст архіву переноситься до папки archives у підпапку, названу так само, як і архів, але без розширення в кінці;
-файли, розширення яких невідомі, залишаються без зміни.
-"""
 import os
 import sys
+import shutil
+import zipfile
 
-"""first vertion"""
 
-"""Second version"""
 images = []
 images_tmp = ['.jpeg', '.png', '.jpg', '.svg']
 
@@ -68,13 +14,12 @@ documents = []
 documents_tmp =['.doc', '.docx', '.txt', '.pdf', '.xlsx', '.pptx']
 
 music = [] 
-music_tmp =  ['.mp3', '..ogg', '.wav', '.amr']
+music_tmp =  ['.mp3', '.ogg', '.wav', '.amr']
 
 archives = []
 archives_tmp =  ['.zip', '.gz', '.tar']
 unknown = []
-
-"""normalize"""
+all_extentions = set()
 
 CYRILLIC_SYMBOLS = "абвгдеёжзийклмнопрстуфхцчшщъыьэюяєіїґ"
 TRANSLATION = ("a", "b", "v", "g", "d", "e", "e", "j", "z", "i", "j", "k", "l", "m", "n", "o", "p", "r", "s", "t", "u",
@@ -102,79 +47,120 @@ def normalize(text):
 def sort_folder(path):
     
     for i in os.listdir(path):
-        
-        if os.path.isdir(path + '\\' + i):
-            sort_folder(path + '\\' + i)
+         
+        if os.path.isdir(path + '\\' + i) == True:
+            folder_name = normalize(i)
+            os.rename(path + '\\' + i, path + '\\' + folder_name)
+            sort_folder(path + '\\' + folder_name)
 
-        else:
-            file_name = os.path.basename(path + '\\' + i)
+
+        if os.path.isfile(path + '\\' + i) == True:
+            file_name = i
             file_extension = list (os.path.splitext(file_name))
-
+            file_extension[0] = normalize(file_extension[0])
+            file_name = file_extension[0] + file_extension[1]
+            os.rename(path + '\\' + i, path + '\\' + file_name)
+    
             for ext in images_tmp:
                 if file_extension[1] == ext:
-                    file_extension[0] = normalize(file_extension[0])
-                    file_name = file_extension[0] + file_extension[1]
+                    all_extentions.add(file_extension[1])
                     images.append(file_name)
+                    shutil.move(path + '\\' + file_name, path_images + '\\' + file_name)
 
-           
             for ext in video_tmp:
+                
                 if file_extension[1] == ext:
-                    file_extension[0] = normalize(file_extension[0])
-                    file_name = file_extension[0] + file_extension[1]
-                    video.append(file_name)            
-                                
+                    all_extentions.add(file_extension[1])
+                    video.append(file_name)
+                    shutil.move(path + '\\' + file_name, path_video + '\\' + file_name)
+                                          
             for ext in documents_tmp:
                 if file_extension[1] == ext:
-                    file_extension[0] = normalize(file_extension[0])
-                    file_name = file_extension[0] + file_extension[1]
+                    all_extentions.add(file_extension[1])
                     documents.append(file_name)
+                    shutil.move(path + '\\' + file_name, path_documents + '\\' + file_name)          
 
             for ext in music_tmp:
                 if file_extension[1] == ext:
-                    file_extension[0] = normalize(file_extension[0])
-                    file_name = file_extension[0] + file_extension[1]
+                    all_extentions.add(file_extension[1])
                     music.append(file_name)
+                    shutil.move(path + '\\' + file_name, path_music + '\\' + file_name)
 
             for ext in archives_tmp:
                 if file_extension[1] == ext:
-                    file_extension[0] = normalize(file_extension[0])
-                    file_name = file_extension[0] + file_extension[1]
+                    all_extentions.add(file_extension[1])
                     archives.append(file_name)
-                else:
-                    file_extension[0] = normalize(file_extension[0])
-                    file_name = file_extension[0] + file_extension[1]
+                    shutil.move(path + '\\' + file_name, path_archives + '\\' + file_name)
+                    
+            if file_extension[1] not in images_tmp and file_extension[1] not in video_tmp and file_extension[1] not in documents_tmp and file_extension[1] not in music_tmp and file_extension[1] not in archives_tmp :
+                    all_extentions.add(file_extension[1])
                     unknown.append(file_name)
+                    shutil.move(path + '\\' + file_name, path_unknown + '\\' + file_name)
+                
+    return images, video, documents, music, unknown, all_extentions
 
-    return images, video, documents, music, unknown 
+def delete_empty_folders(path):
+    for root, dirs, files in os.walk(path, topdown=False):
 
+        for folder in dirs:
+            folder_path = os.path.join(root, folder)
+        
+            if not os.listdir(folder_path):  # Check if folder is empty
+                os.rmdir(folder_path)
 
+def unzip_archivez(path_archves):
 
+    for i in os.listdir(path_archives):
+        file_extension = list (os.path.splitext(i))
+        folder_name = file_extension[0]
     
-"""main method to start script"""
-# path_input = sys.argv  # function gets arguments enered during script start
-# #print (path_input)
-# path = path_input[1]
-# # print(path1)
-# sort_folder(path)
+        extraction_path = os.path.join(path_archives, folder_name)
 
-"""test 1"""
+        if not os.path.exists(extraction_path):
+            os.makedirs(extraction_path)
 
-path = 'D:\\VSCode_projects\\Unsorted_hw6_normalize_test'
+        with zipfile.ZipFile(path_archives + '\\' + i, 'r') as zip_ref:
+            zip_ref.extractall(extraction_path)
+
+
+path_input = sys.argv
+path = path_input[1]
+
+path_images = path + '\\' + 'images'
+if not os.path.exists(path_images):
+    os.makedirs(path_images)
+
+path_video = path + '\\' + 'video'
+if not os.path.exists(path_video):
+    os.makedirs(path_video)
+
+path_documents = path + '\\' + 'documents'
+if not os.path.exists(path_documents):
+    os.makedirs(path_documents)
+
+path_music = path + '\\' + 'music'
+if not os.path.exists(path_music):
+    os.makedirs(path_music)
+
+path_archives = path + '\\' + 'archives'
+if not os.path.exists(path_archives):
+    os.makedirs(path_archives)
+
+path_unknown = path + '\\' + 'unknown'
+if not os.path.exists(path_unknown):
+    os.makedirs(path_unknown)
+
 sort_folder(path)
+delete_empty_folders(path)
+all_extentions =list(all_extentions)
+unzip_archivez(path_archives)
 print ('\nImages = ',images, '\n',
        '\nVideo = ',video, '\n'
        '\nDocuments = ',documents, '\n'
        '\nMusic = ',music, '\n'
        '\nArchives = ',archives, '\n'
-       '\nUnknown = ',unknown, '\n')
-
-"""test 2"""
-
-# def main():
-#     path = 'D:\\VSCode_projects\\Unsorted_hw6'
-#     return sort_folder(path)
-
-# if __name__ == 'main':
-#     main()
+       '\nUnknown = ',unknown, '\n'
+       '\nAll_exstensions = ',all_extentions)
+#     path = 'python md_6_hw_11.py D:\\VSCode_projects\\Unsorted_hw6_main'
 
 
