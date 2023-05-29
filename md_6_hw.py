@@ -161,6 +161,6 @@ print ('\nImages = ',images, '\n',
        '\nArchives = ',archives, '\n'
        '\nUnknown = ',unknown, '\n'
        '\nAll_exstensions = ',all_extentions)
-#     path = 'python md_6_hw_11.py D:\\VSCode_projects\\Unsorted_hw6_main'
+
 
 
