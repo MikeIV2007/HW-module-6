@@ -5,7 +5,7 @@
 Також, не варто робити логіку в глобальному скоупі, краще оголосіть відповідні функції."
 """
 """І ще - зверніть увагу на довжину рядків, за PEP8 вони не повинні перевищувати 79 символів)"""
-#this sample was sent for last check
+#this sample was sent for the last check
 
 import os
 import sys
