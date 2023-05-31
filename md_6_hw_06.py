@@ -5,12 +5,13 @@
 Також, не варто робити логіку в глобальному скоупі, краще оголосіть відповідні функції."
 """
 """І ще - зверніть увагу на довжину рядків, за PEP8 вони не повинні перевищувати 79 символів)"""
-#this sample was sent for last check
+# створення словника Trans{} винесено з функції
 
 import os
 import sys
 import shutil
 import zipfile
+
 
 images = []
 images_tmp = ['.jpeg', '.png', '.jpg', '.svg']
@@ -42,16 +43,15 @@ CYRILLIC_SYMBOLS = "абвгдеёжзийклмнопрстуфхцчшщъыь
 TRANSLATION = ("a", "b", "v", "g", "d", "e", "e", "j", "z", "i", "j", "k", "l", "m", "n", "o", "p", "r", "s", "t", "u",
                "f", "h", "ts", "ch", "sh", "sch", "", "y", "", "e", "yu", "ya", "je", "i", "ji", "g")
 
-def translite(text):
-    TRANS = {}
-    text = text.translate(TRANS)
-    for c, l in zip(CYRILLIC_SYMBOLS, TRANSLATION):
-        TRANS[ord(c)] = l
-        TRANS[ord(c.upper())] = l.upper()
-    return text
+#creation of dictionary for trancliteration
+TRANS = {} 
+
+for c, l in zip(CYRILLIC_SYMBOLS, TRANSLATION):
+    TRANS[ord(c)] = l
+    TRANS[ord(c.upper())] = l.upper()
 
 def normalize(text):
-    translite(text)
+    text = text.translate(TRANS)
     for chr in text:
         if ord(chr) in range(48,58):# (0-9)
             continue
@@ -208,3 +208,5 @@ sort_folder(path)
 delete_empty_folders(path)
 unzip_archivez(path_archives)
 print_lists()
+
+#Path to test:  python md_6_hw_01.py D:\\VSCode_projects\\Unsorted_hw6_main
