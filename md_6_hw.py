@@ -59,7 +59,7 @@ def sort_folder(path):
             file_extension = list (os.path.splitext(file_name))
             file_extension[0] = normalize(file_extension[0])
             file_name = file_extension[0] + file_extension[1]
-            os.rename(path + '\\' + i, path + '\\' + file_name)
+            os.rename(path + '\\' + i, path + '\\' + file_name) # renaming path or derictory: os.rename(original_path, new_path)
     
             for ext in images_tmp:
                 if file_extension[1] == ext:

@@ -64,7 +64,7 @@ def normalize(text):
     return text
 
 def sort_folder(path):
-
+   
     all_extentions_tmp = [] 
     
     for i in os.listdir(path):

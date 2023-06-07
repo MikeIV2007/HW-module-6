@@ -19,8 +19,14 @@ music_tmp =  ['.mp3', '.ogg', '.wav', '.amr']
 
 archives = []
 archives_tmp =  ['.zip', '.gz', '.tar']
+
 unknown = []
+
+all_extentions_tmp = images_tmp + video_tmp + documents_tmp + music_tmp + archives_tmp
+
 all_extentions = set()
+
+
 
 path = ''
 path_images = ''
@@ -56,9 +62,7 @@ def normalize(text):
     return text
 
 def sort_folder(path):
-
-    all_extentions_tmp = [] 
-    
+  
     for i in os.listdir(path):
          
         if os.path.isdir(os.path.join(path, i)) == True:
@@ -66,63 +70,64 @@ def sort_folder(path):
             os.rename(os.path.join(path, i), os.path.join(path,folder_name))
             sort_folder(os.path.join(path, folder_name))
 
-
         if os.path.isfile(os.path.join(path, i)) == True:
             file_name = i
             file_extension = list (os.path.splitext(file_name))
             file_extension[0] = normalize(file_extension[0])
             file_name = file_extension[0] + file_extension[1]
+            ## renaming path or derictory: os.rename(original_path, new_path)
             os.rename(os.path.join(path, i), os.path.join(path, file_name))
+            # file renamed by normilized 
     
-            for ext in images_tmp:
+            #for ext in images_tmp:
 
-                all_extentions_tmp.append(images_tmp)
-
-                if file_extension[1] == ext:
-                    all_extentions.add(file_extension[1])
-                    images.append(file_name)
-                    shutil.move(os.path.join(path, file_name), os.path.join(path_images, file_name))
-
-            for ext in video_tmp:
-
-                all_extentions_tmp.append(video_tmp)
+            if file_extension[1] in images_tmp:
+                all_extentions.add(file_extension[1])
+                images.append(file_name)
+                shutil.move(os.path.join(path, file_name), os.path.join(path_images, file_name))
                 
-                if file_extension[1] == ext:
-                    all_extentions.add(file_extension[1])
-                    video.append(file_name)
-                    shutil.move(os.path.join(path, file_name), os.path.join(path_video, file_name))
+
+            # for ext in video_tmp:
+               
+            if file_extension[1] in video_tmp:
+                all_extentions.add(file_extension[1])
+                video.append(file_name)
+                shutil.move(os.path.join(path, file_name), os.path.join(path_video, file_name))
                                           
-            for ext in documents_tmp:
+            # for ext in documents_tmp:
 
-                all_extentions_tmp.append(documents)
+            if file_extension[1] in documents_tmp:
+                all_extentions.add(file_extension[1])
+                documents.append(file_name)
+                shutil.move(os.path.join(path, file_name), os.path.join(path_documents, file_name))          
 
-                if file_extension[1] == ext:
-                    all_extentions.add(file_extension[1])
-                    documents.append(file_name)
-                    shutil.move(os.path.join(path, file_name), os.path.join(path_documents, file_name))          
+            # for ext in music_tmp:
 
-            for ext in music_tmp:
+            if file_extension[1] in music_tmp:
+                all_extentions.add(file_extension[1])
+                music.append(file_name)
+                shutil.move(os.path.join(path, file_name), os.path.join(path_music, file_name))
 
-                all_extentions_tmp.append(music_tmp)
+            # for ext in archives_tmp:
 
-                if file_extension[1] == ext:
-                    all_extentions.add(file_extension[1])
-                    music.append(file_name)
-                    shutil.move(os.path.join(path, file_name), os.path.join(path_music, file_name))
+            if file_extension[1] in archives_tmp:
+                all_extentions.add(file_extension[1])
+                archives.append(file_name)
+                shutil.move(os.path.join(path, file_name), os.path.join(path_archives, file_name))
 
-            for ext in archives_tmp:
+            #     else:
+            #         all_extentions.add(file_extension[1])
+            #         unknown.append(file_name)
+            #         print(file_name)
+            #         shutil.move(os.path.join(path, file_name), os.path.join(path_unknown, file_name))
 
-                all_extentions_tmp.append(archives_tmp)
+            #for ext in all_extentions_tmp:
 
-                if file_extension[1] == ext:
-                    all_extentions.add(file_extension[1])
-                    archives.append(file_name)
-                    shutil.move(os.path.join(path, file_name), os.path.join(path_archives, file_name))
-                    
             if file_extension[1] not in all_extentions_tmp:
-                    all_extentions.add(file_extension[1])
-                    unknown.append(file_name)
-                    shutil.move(os.path.join(path, file_name), os.path.join(path_unknown, file_name))
+                all_extentions.add(file_extension[1])
+                unknown.append(file_name)
+                #print(file_name)
+                shutil.move(os.path.join(path, file_name), os.path.join(path_unknown, file_name))
 
     return images, video, documents, music, unknown, all_extentions
 
@@ -163,50 +168,50 @@ def print_lists():
         '\nAll_exstensions = ',all_extentions_list)
     
 
-def get_main_path():
+
+def get_pathes_create_folsers():
+    global path
+    global path_images
+    global path_video
+    global path_documents
+    global path_music
+    global path_archives
+    global path_unknown
 
     path_input = sys.argv
     path = path_input[1]
-    print ('path inner = ',path)
 
-    return path
-
-def get_pathes_create_folsers():
-
-    path_images = os.path.join(path, images)
+    path_images = os.path.join(path, 'images')
     if not os.path.exists(path_images):
         os.makedirs(path_images)
 
-    path_video = os.path.join(path, video)
+    path_video = os.path.join(path, 'video')
     if not os.path.exists(path_video):
         os.makedirs(path_video)
 
-    path_documents =os.path.join(path, documents)
+    path_documents =os.path.join(path, 'documents')
     if not os.path.exists(path_documents):
         os.makedirs(path_documents)
 
-    path_music = os.path.join(path, music)
+    path_music = os.path.join(path, 'music')
     if not os.path.exists(path_music):
         os.makedirs(path_music)
 
-    path_archives = os.path.join(path, archives)
+    path_archives = os.path.join(path, 'archives')
     if not os.path.exists(path_archives):
         os.makedirs(path_archives)
 
-    path_unknown = os.path.join(path, unknown)
+    path_unknown = os.path.join(path, 'unknown')
     if not os.path.exists(path_unknown):
         os.makedirs(path_unknown)
 
     return path, path_images, path_video, path_documents, path_music, path_archives, path_unknown
 
-get_main_path()
-print ('path global =', path)
-# get_pathes_create_folsers(path)
-# sort_folder(path)
-# delete_empty_folders(path)
-# unzip_archivez(path_archives)
-# print_lists()
+get_pathes_create_folsers()
+sort_folder(path)
+delete_empty_folders(path)
+unzip_archivez(path_archives)
+print_lists()
 
 #Path to test:  python md_6_hw_06.py D:\\VSCode_projects\\Unsorted_hw6_main
-#Path to test:  D:\VSCode_projects\HW-module-6\md_6_hw_06.py D:\\VSCode_projects\\Unsorted_hw6_main
 
