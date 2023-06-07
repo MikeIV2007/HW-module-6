@@ -1,11 +1,3 @@
-""""Вітаю.
-Скрипт працює правильно. Але тільки на win - машині(
-Ви шляхи збираєте як рядки, тому буде залежність від платформи.
-Рекомендую використати спеціальні методи, наприклад os.path.join
-Також, не варто робити логіку в глобальному скоупі, краще оголосіть відповідні функції."
-"""
-"""І ще - зверніть увагу на довжину рядків, за PEP8 вони не повинні перевищувати 79 символів)"""
-# створення словника Trans{} винесено з функції
 
 import os
 import sys
@@ -171,10 +163,15 @@ def print_lists():
         '\nAll_exstensions = ',all_extentions_list)
     
 
-def get_pathes_create_folsers():
+def get_main_path():
 
     path_input = sys.argv
     path = path_input[1]
+    print ('path inner = ',path)
+
+    return path
+
+def get_pathes_create_folsers():
 
     path_images = os.path.join(path, images)
     if not os.path.exists(path_images):
@@ -202,11 +199,14 @@ def get_pathes_create_folsers():
 
     return path, path_images, path_video, path_documents, path_music, path_archives, path_unknown
 
+get_main_path()
+print ('path global =', path)
+# get_pathes_create_folsers(path)
+# sort_folder(path)
+# delete_empty_folders(path)
+# unzip_archivez(path_archives)
+# print_lists()
 
-get_pathes_create_folsers()
-sort_folder(path)
-delete_empty_folders(path)
-unzip_archivez(path_archives)
-print_lists()
+#Path to test:  python md_6_hw_06.py D:\\VSCode_projects\\Unsorted_hw6_main
+#Path to test:  D:\VSCode_projects\HW-module-6\md_6_hw_06.py D:\\VSCode_projects\\Unsorted_hw6_main
 
-#Path to test:  python md_6_hw_01.py D:\\VSCode_projects\\Unsorted_hw6_main
