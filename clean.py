@@ -125,7 +125,8 @@ def print_all_exrentions(path: Path)-> list:
 
 def main():
     try:
-        path = Path(sys.argv[1])
+        user_input = input("\nEnter path to folder\n>>>" )
+        path = Path(user_input)
     except IndexError:
         return print ('There is no path to folder! Enter path!')
    
@@ -138,4 +139,4 @@ def main():
 if __name__ == '__main__':
     print(main())
 
-#Path to test:  python clean.py D:\VSCode_projects\Unsorted_hw6_main
+#Path to test: D:\VSCode_projects\Unsorted_hw6_main
